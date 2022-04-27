@@ -3,7 +3,7 @@ const sendToken = require("../utils/sendToken");
 const ErrorHandler = require("../utils/errorHandler");
 const crypto = require("crypto");
 const sendResponse = require("../utils/sendResponse");
-
+const sendEmail = require("../utils/sendEmail");
 exports.register = async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -61,7 +61,6 @@ exports.forgotPassword = async (req, res, next) => {
   const resetPasswordUrl = `${req.protocol}://${req.get(
     "host"
   )}/api/v1/user/reset/${resetToken}`;
-
   const message = `su token de restablecimiento de contraseña es :- \n\n ${resetPasswordUrl} \n\n si no solicitó este restablecimiento, ignore este correo electrónico`;
   try {
     await sendEmail({
@@ -88,6 +87,7 @@ exports.resetPassword = async (req, res, next) => {
       .createHash("sha256")
       .update(req.params.token)
       .digest("hex");
+
     const user = await User.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
@@ -183,8 +183,7 @@ exports.updateUserRole = async (req, res, next) => {
 };
 exports.deleteUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
-
+    const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       return next(
         new ErrorHandler(
@@ -193,8 +192,7 @@ exports.deleteUser = async (req, res, next) => {
         )
       );
     }
-    await user.remove();
-    sendResponse(null, "User deleted successfully", 200, res);
+    sendResponse(user, "User deleted successfully", 200, res);
   } catch (err) {
     next(err);
   }

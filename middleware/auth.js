@@ -18,7 +18,7 @@ exports.authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       next(
-        new ErrorHander("No está autorizado para acceder a este recurso", 403)
+        new ErrorHandler("No está autorizado para acceder a este recurso", 403)
       );
     }
     next();

@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
-const crypto = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const UserSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+    },
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -20,6 +23,12 @@ const UserSchema = new mongoose.Schema(
         "The password must be at least 6 characters",
       ],
       select: false,
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: ["admin", "user"],
+      default: "user",
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
