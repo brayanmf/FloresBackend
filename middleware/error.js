@@ -7,6 +7,10 @@ module.exports = (err, req, res, next) => {
     const message = `Duplicate: ${err.keyValue.email} already exists`;
     err = new ErrorHandler(message, 400);
   }
+  if (err.kind === "ObjectId") {
+    const message = `Product not found with id ${err.value}`;
+    err = new ErrorHandler(message, 404);
+  }
   res.status(err.statusCode).json({
     success: false,
     error: err.message,

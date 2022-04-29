@@ -1,10 +1,15 @@
-const User = require("./user/user.model");
-const ErrorHandler = require("../utils/errorHandler");
-const sendResponse = require("../utils/sendResponse");
+const User = require("./user.model");
+const ErrorHandler = require("../../utils/errorHandler");
+const sendResponse = require("../../utils/sendResponse");
+const findUser = require("./utils/findUser");
 
 exports.getDetails = async (req, res, next) => {
-  const user = await User.findById(req.user.id);
-  sendResponse(user, "success", 200, res);
+  try {
+    const user = await findUser(req.user.id);
+    sendResponse(user, "success", 200, res);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getAll = async (req, res, next) => {
@@ -21,6 +26,7 @@ exports.updateProfile = async (req, res, next) => {
       name: req.body.name,
       email: req.body.email,
     };
+
     const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
       new: true,
       runValidators: true,
@@ -32,14 +38,7 @@ exports.updateProfile = async (req, res, next) => {
 };
 exports.getSingleUser = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user)
-      return next(
-        new ErrorHandler(
-          `the user does not exist with the id ${req.params.id}`,
-          404
-        )
-      );
+    const user = await findUser(req.params.id);
     sendResponse(user, "success", 200, res);
   } catch (err) {
     next(err);
@@ -66,10 +65,7 @@ exports.deleteUser = async (req, res, next) => {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       return next(
-        new ErrorHandler(
-          `the user does not exist with the id ${req.params.id}`,
-          404
-        )
+        new ErrorHandler(`El usuario no existe con el id ${req.params.id}`, 404)
       );
     }
     sendResponse(user, "User deleted successfully", 200, res);

@@ -10,17 +10,21 @@ const UserSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, "Correo electronico es requerido"],
       unique: true,
-      validate: [validator.isEmail, "Please enter a valid email"],
+      trim: true,
+      validate: [
+        validator.isEmail,
+        "Por favor introduzca una dirección de correo electrónico válida",
+      ],
     },
     password: {
       type: String,
-      required: [true, "Enter your password"],
-      minlength: [6, "The password must be at least 6 characters"],
+      required: [true, "Ingresa tu contraseña"],
+      minlength: [6, "La contraseña debe tener al menos 6 caracteres."],
       validate: [
         validator.isLength,
-        "The password must be at least 6 characters",
+        "La contraseña debe tener al menos 6 caracteres.",
       ],
       select: false,
     },
@@ -29,6 +33,21 @@ const UserSchema = new mongoose.Schema(
       required: true,
       enum: ["admin", "user"],
       default: "user",
+    },
+    avatar: {
+      public_id: {
+        type: String,
+        required: true,
+        default: "istockphoto-1130884625-612x612_cwvfdf",
+        trim: true,
+      },
+      url: {
+        type: String,
+        required: true,
+        trim: true,
+        default:
+          "https://res.cloudinary.com/dx1ece9ck/image/upload/v1651166764/store/users/istockphoto-1130884625-612x612_cwvfdf.jpg",
+      },
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,

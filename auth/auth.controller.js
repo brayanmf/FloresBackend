@@ -3,13 +3,13 @@ const sendToken = require("../utils/sendToken");
 const ErrorHandler = require("../utils/errorHandler");
 const crypto = require("crypto");
 const sendResponse = require("../utils/sendResponse");
-const responseEmail = require("./local.services");
+const { responseEmail } = require("./auth.services");
 
 exports.register = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return next(new ErrorHandler("Email and password are required", 400));
+      return next(new ErrorHandler("Se requiere Email y contraseña", 400));
     }
     const user = await User.create({
       email,
@@ -25,15 +25,15 @@ exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return next(new ErrorHandler("Email and password are required", 400));
+      return next(new ErrorHandler("Se requiere Email y contraseña", 400));
     }
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      return next(new ErrorHandler("Invalid email", 401));
+      return next(new ErrorHandler("Email inválido", 401));
     }
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
-      return next(new ErrorHandler("Invalid password", 401));
+      return next(new ErrorHandler("contraseña inválido", 401));
     }
     sendToken(user, 200, res);
   } catch (err) {
@@ -52,9 +52,9 @@ exports.forgotPassword = async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
   try {
     if (!user) {
-      return next(new ErrorHandler("your email does not exist", 404));
+      return next(new ErrorHandler("tu correo no existe", 404));
     }
-    await responseEmail(user);
+    await responseEmail(req, res, user);
   } catch (err) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -77,13 +77,13 @@ exports.resetPassword = async (req, res, next) => {
     if (!user)
       return next(
         new ErrorHandler(
-          "Reset Password Token is invalid or has been expired",
+          "El token de restablecimiento de contraseña no es válido o ha caducado",
           400
         )
       );
 
     if (req.body.password !== req.body.confirmPassword)
-      return next(new ErrorHandler("Passwords do not match", 400));
+      return next(new ErrorHandler("Las contraseñas no coinciden", 400));
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -99,10 +99,10 @@ exports.updatePassword = async (req, res, next) => {
     const user = await User.findById(req.user.id).select("+password");
     const isPasswordMatched = user.comparePassword(req.body.oldPassword);
     if (!isPasswordMatched) {
-      return next(new ErrorHandler("old password is incorrect", 401));
+      return next(new ErrorHandler("Antigua contraseña es incorrecta", 401));
     }
     if (req.body.newPassword !== req.body.confirmPassword) {
-      return next(new ErrorHandler("password does not match", 400));
+      return next(new ErrorHandler("Las contraseñas no coinciden", 400));
     }
     user.password = req.body.newPassword;
     await user.save();

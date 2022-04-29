@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { isAuthenticated, authorizeRoles } = require("../middleware/auth");
+const { isAuthenticated, authorizeRoles } = require("./auth.services");
 const {
   register,
   login,
@@ -7,7 +7,7 @@ const {
   forgotPassword,
   resetPassword,
   updatePassword,
-} = require("./local.controller");
+} = require("./auth.controller");
 const router = Router();
 
 router.post("/register", register);
@@ -16,3 +16,5 @@ router.post("/login", login);
 router.post("/forgot", forgotPassword);
 router.put("/reset/:token", resetPassword);
 router.put("/password/update", isAuthenticated, updatePassword);
+
+module.exports = router;
