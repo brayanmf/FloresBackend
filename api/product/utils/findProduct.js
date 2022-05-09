@@ -1,9 +1,9 @@
 const Product = require("../product.model");
 const ErrorHandler = require("../../../utils/errorHandler");
 
-exports.findProduct = async (req, res, next) => {
+exports.findProduct = async (id) => {
   try {
-    Product.findById(req.params.id);
+    const product = Product.findById(id);
     if (!product) {
       return next(
         new ErrorHandler(

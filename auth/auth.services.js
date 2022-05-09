@@ -9,7 +9,7 @@ exports.responseEmail = async (req, res, user) => {
   await user.save({ validateBeforeSave: false });
   const resetPasswordUrl = `${req.protocol}://${req.get(
     "host"
-  )}/api/v1/user/reset/${resetToken}`;
+  )}/api/v1/reset/${resetToken}`;
   const message = `su token de restablecimiento de contraseña es :- \n\n ${resetPasswordUrl} \n\n si no solicitó este restablecimiento, ignore este correo electrónico`;
 
   await sendEmail({

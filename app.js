@@ -9,7 +9,12 @@ const app = express();
 const cors = require("cors");
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+const corsOptions = {
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: ["http://localhost:3000"],
+};
+app.use(cors(corsOptions));
 app.use("/api/v1", user);
 app.use("/api/v1", auth);
 app.use("/api/v1", product);

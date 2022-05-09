@@ -4,7 +4,6 @@ const ApiFeatures = require("../../utils/apiFeatures");
 const sendResponse = require("../../utils/sendResponse");
 const { ReviewCreate } = require("./product.services");
 const { findProduct } = require("./utils/findProduct");
-
 exports.createProduct = async (req, res, next) => {
   try {
     req.body.user = req.user.id;
@@ -16,14 +15,23 @@ exports.createProduct = async (req, res, next) => {
 };
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const resultPerPage = 3;
-    //  const productCount = await Product.countDocuments();
-    const ApiFeature = new ApiFeatures(Product, req.query)
+    const resultPerPage = 20;
+    const productsCount = await Product.countDocuments();
+    const ApiFeature = new ApiFeatures(Product.find(), req.query)
       .search()
-      .filter()
-      .pagination(resultPerPage);
-    const products = await ApiFeature.products;
-    sendResponse(products, "success", 200, res);
+      .filter();
+    let products = await ApiFeature.query;
+    let filteredProductsCount = products.length;
+    ApiFeature.pagination(resultPerPage);
+    products = await ApiFeature.query.clone();
+
+    res.status(200).json({
+      sucess: true,
+      products,
+      productsCount,
+      resultPerPage,
+      filteredProductsCount,
+    });
   } catch (err) {
     next(err);
   }
@@ -31,6 +39,7 @@ exports.getAllProducts = async (req, res, next) => {
 exports.getProductDetails = async (req, res, next) => {
   try {
     const product = await findProduct(req.params.id);
+
     sendResponse(product, "success", 200, res);
   } catch (err) {
     next(err);
@@ -66,9 +75,7 @@ exports.createProductReview = async (req, res, next) => {
   try {
     const product = ReviewCreate(req, res, next);
     await product.save({ validateBeforeSave: false });
-    res.status(200).json({
-      success: true,
-    });
+    sendResponse(null, "success", 200, res);
   } catch (err) {
     next(err);
   }

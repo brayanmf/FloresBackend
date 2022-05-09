@@ -1,6 +1,6 @@
 class ApiFeatures {
-  constructor(products, queryString) {
-    this.products = products;
+  constructor(query, queryString) {
+    this.query = query;
     this.queryString = queryString;
   }
   search() {
@@ -8,7 +8,7 @@ class ApiFeatures {
       ? { name: { $regex: this.queryString.keyword, $options: "i" } }
       : {};
 
-    this.products = this.products.find({ ...keywork });
+    this.query = this.query.find({ ...keywork });
     return this;
   }
   filter() {
@@ -18,13 +18,14 @@ class ApiFeatures {
     removeFields.forEach((el) => delete queryCopy[el]);
     let queryStr = JSON.stringify(queryCopy);
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`);
-    this.products = this.products.find(JSON.parse(queryStr));
+    this.query = this.query.find(JSON.parse(queryStr));
     return this;
   }
   pagination(resultPerPage) {
     const currentPage = Number(this.queryString.page) || 1;
     const skip = resultPerPage * (currentPage - 1);
-    this.products = this.products.skip(skip).limit(resultPerPage);
+    this.query = this.query.skip(skip).limit(resultPerPage);
+
     return this;
   }
 }
