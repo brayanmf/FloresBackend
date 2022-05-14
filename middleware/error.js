@@ -11,6 +11,12 @@ module.exports = (err, req, res, next) => {
     const message = `Product not found with id ${err.value}`;
     err = new ErrorHandler(message, 404);
   }
+  if (!err.statusCode) {
+    res.status(500).json({
+      status: "error",
+      message: ` internal server error  ${err} `,
+    });
+  }
   res.status(err.statusCode).json({
     success: false,
     message: err.message,

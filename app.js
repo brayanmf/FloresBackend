@@ -1,5 +1,9 @@
+require("dotenv").config({
+  path: ".env",
+});
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const cloudinary = require("cloudinary");
 const auth = require("./auth");
 const user = require("./api/user");
 const product = require("./api/product");
@@ -14,6 +18,12 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   origin: ["http://localhost:3000"],
 };
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
 app.use(cors(corsOptions));
 app.use("/api/v1", user);
 app.use("/api/v1", auth);

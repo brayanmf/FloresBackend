@@ -1,5 +1,7 @@
 const { Router } = require("express");
-const { isAuthenticated, authorizeRoles } = require("./auth.services");
+const multer = require("multer");
+
+const { isAuthenticated } = require("./auth.services");
 const {
   register,
   login,
@@ -10,7 +12,9 @@ const {
 } = require("./auth.controller");
 const router = Router();
 
-router.post("/register", register);
+const upload = multer({ dest: "./temp" });
+
+router.post("/register", upload.single("avatar"), register);
 router.get("/logout", logout);
 router.post("/login", login);
 router.post("/forgot", forgotPassword);

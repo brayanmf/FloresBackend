@@ -1,24 +1,22 @@
 const User = require("../api/user/user.model");
 const sendToken = require("../utils/sendToken");
+const sendEmail = require("../utils/sendEmail");
 const ErrorHandler = require("../utils/errorHandler");
 const crypto = require("crypto");
 const sendResponse = require("../utils/sendResponse");
-const { responseEmail } = require("./auth.services");
+const { createUser, findEmail } = require("./auth.services");
+const fs = require("fs");
 
 exports.register = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return next(new ErrorHandler("Se requiere Email y contraseña", 400));
-    }
-    const user = await User.create({
-      email,
-      password,
-    });
-
+    const user = await createUser(req, next);
     sendToken(user, 201, res);
   } catch (err) {
     next(err);
+  } finally {
+    fs.unlink(req.file.path, (err) => {
+      if (err) throw err;
+    });
   }
 };
 exports.login = async (req, res, next) => {
@@ -33,7 +31,7 @@ exports.login = async (req, res, next) => {
     }
     const isPasswordMatched = await user.comparePassword(password);
     if (!isPasswordMatched) {
-      return next(new ErrorHandler("contraseña inválido", 401));
+      return next(new ErrorHandler("contraseña inválida", 401));
     }
     sendToken(user, 200, res);
   } catch (err) {
@@ -49,12 +47,19 @@ exports.logout = async (req, res) => {
   sendResponse(null, "Logout SuccessFully", 200, res);
 };
 exports.forgotPassword = async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email });
+  const { user, message } = await findEmail(req.body, next);
   try {
-    if (!user) {
-      return next(new ErrorHandler("tu correo no existe", 404));
-    }
-    await responseEmail(req, res, user);
+    await sendEmail({
+      email: user.email,
+      subject: "Restablecer contraseña del Ecommerce",
+      message,
+    });
+    sendResponse(
+      null,
+      `Correo electrónico enviado a ${user.email} con éxito`,
+      200,
+      res
+    );
   } catch (err) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;

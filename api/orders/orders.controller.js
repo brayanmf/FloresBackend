@@ -42,7 +42,7 @@ exports.getSingleOrder = async (req, res, next) => {
 
 exports.getMyOrders = async (req, res, next) => {
   try {
-    const orders = await ordersFindByUser(req.user);
+    const orders = await ordersFindByUser(req.user, next);
     sendResponse(res, 200, "Orders found successfully", orders);
   } catch (err) {
     next(err);
@@ -51,7 +51,7 @@ exports.getMyOrders = async (req, res, next) => {
 
 exports.updateOrder = async (req, res, next) => {
   try {
-    await ordersUpdate(req.params, req.body);
+    await ordersUpdate(req.params, req.body, next);
     sendResponse(res, 200, "Order updated successfully");
   } catch (err) {
     next(err);
@@ -60,7 +60,7 @@ exports.updateOrder = async (req, res, next) => {
 
 exports.deleteOrder = async (req, res, next) => {
   try {
-    await ordersRemove(req.params);
+    await ordersRemove(req.params, next);
     sendResponse(res, 200, "Order deleted successfully");
   } catch (err) {
     next(err);

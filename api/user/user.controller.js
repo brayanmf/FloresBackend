@@ -1,11 +1,12 @@
 const User = require("./user.model");
 const ErrorHandler = require("../../utils/errorHandler");
 const sendResponse = require("../../utils/sendResponse");
-const findUser = require("./utils/findUser");
+const { findUser, changeProfile } = require("./user.services");
+const fs = require("fs");
 
 exports.getDetails = async (req, res, next) => {
   try {
-    const user = await findUser(req.user.id);
+    const user = await findUser(req.user);
     sendResponse(user, "success", 200, res);
   } catch (err) {
     next(err);
@@ -22,23 +23,20 @@ exports.getAll = async (req, res, next) => {
 };
 exports.updateProfile = async (req, res, next) => {
   try {
-    const newUserData = {
-      name: req.body.name,
-      email: req.body.email,
-    };
+    const user = await changeProfile(req.body, req, req.user);
 
-    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
-      new: true,
-      runValidators: true,
-    });
     sendResponse(user, "success", 200, res);
   } catch (err) {
     next(err);
+  } finally {
+    fs.unlink(req.file.path, (err) => {
+      if (err) throw err;
+    });
   }
 };
 exports.getSingleUser = async (req, res, next) => {
   try {
-    const user = await findUser(req.params.id);
+    const user = await findUser(req.params);
     sendResponse(user, "success", 200, res);
   } catch (err) {
     next(err);

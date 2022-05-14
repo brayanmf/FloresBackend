@@ -17,14 +17,14 @@ exports.ordersFind = async () => {
   };
   return data;
 };
-exports.ordersFindById = async ({ id }) => {
+exports.ordersFindById = async ({ id }, next) => {
   const order = await Orders.findById(id).populate("user", "name email");
   if (!order) {
     return next(new ErrorHandler("No se encontro el pedido", 404));
   }
   return order;
 };
-exports.ordersFindByUser = async ({ _id }) => {
+exports.ordersFindByUser = async ({ _id }, next) => {
   const orders = await Orders.find({ user: _id });
   if (!orders) {
     return next(new ErrorHandler("Usted no tiene ordenes", 404));
@@ -37,7 +37,7 @@ async function update(id, quantity) {
   product.Stock -= quantity;
   await product.save({ validateBeforeSave: false });
 }
-exports.ordersUpdate = async ({ id }, { status }) => {
+exports.ordersUpdate = async ({ id }, { status }, next) => {
   const order = await Orders.findById(id);
   if (order.orderStatus === "Delivered") {
     return next(new ErrorHandler("ya has entregado este pedido", 404));
@@ -54,7 +54,7 @@ exports.ordersUpdate = async ({ id }, { status }) => {
   return await order.save({ validateBeforeSave: false });
 };
 
-exports.ordersRemove = async ({ id }) => {
+exports.ordersRemove = async ({ id }, next) => {
   const order = await Orders.findById(id);
   if (!order) {
     return next(new ErrorHandler("No se encontro el pedido", 404));

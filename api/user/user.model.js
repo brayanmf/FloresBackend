@@ -38,15 +38,12 @@ const UserSchema = new mongoose.Schema(
       public_id: {
         type: String,
         required: true,
-        default: "istockphoto-1130884625-612x612_cwvfdf",
         trim: true,
       },
       url: {
         type: String,
         required: true,
         trim: true,
-        default:
-          "https://res.cloudinary.com/dx1ece9ck/image/upload/v1651166764/store/users/istockphoto-1130884625-612x612_cwvfdf.jpg",
       },
     },
     resetPasswordToken: String,

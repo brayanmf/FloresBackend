@@ -1,4 +1,6 @@
 const { Router } = require("express");
+const multer = require("multer");
+
 const { isAuthenticated, authorizeRoles } = require("../../auth/auth.services");
 const router = Router();
 const {
@@ -9,11 +11,16 @@ const {
   updateUserRole,
   deleteUser,
 } = require("./user.controller");
-
+const upload = multer({ dest: "./temp" });
 router.get("/user/me", isAuthenticated, getDetails);
 router.get("/user/getAll", isAuthenticated, authorizeRoles("admin"), getAll);
 
-router.get("/user/me/update", isAuthenticated, updateProfile);
+router.put(
+  "/user/me/update",
+  isAuthenticated,
+  upload.single("avatar"),
+  updateProfile
+);
 router
   .route("/admin/user/:id")
   .get(isAuthenticated, authorizeRoles("admin"), getSingleUser)
