@@ -1,9 +1,9 @@
-const Orders = require("./Orders.model");
+const Orders = require("./orders.model");
 const ErrorHandler = require("../../utils/errorHandler");
-const Product = require("../products/Products.model");
+const Product = require("../product/product.model");
 
-exports.ordersAdd = async ({ ...data }) => {
-  return await Orders.create({ data, paidAt: Date.now(), user: req.user._id });
+exports.ordersAdd = async (data, _id) => {
+  return await Orders.create({ ...data, paidAt: Date.now(), user: _id });
 };
 exports.ordersFind = async () => {
   const orders = await Orders.find();

@@ -7,6 +7,8 @@ const cloudinary = require("cloudinary");
 const auth = require("./auth");
 const user = require("./api/user");
 const product = require("./api/product");
+const payment = require("./api/payment");
+const order = require("./api/orders");
 
 const errorMiddleware = require("./middleware/error");
 const app = express();
@@ -28,5 +30,7 @@ app.use(cors(corsOptions));
 app.use("/api/v1", user);
 app.use("/api/v1", auth);
 app.use("/api/v1", product);
+app.use("/api/v1", payment);
+app.use("/api/v1", order);
 app.use(errorMiddleware);
 module.exports = app;

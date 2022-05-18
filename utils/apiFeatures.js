@@ -17,7 +17,7 @@ class ApiFeatures {
     const removeFields = ["keyword", "page", "limit"];
     removeFields.forEach((el) => delete queryCopy[el]);
     let queryStr = JSON.stringify(queryCopy);
-    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`); // add probably to filter by rating
     this.query = this.query.find(JSON.parse(queryStr));
     return this;
   }

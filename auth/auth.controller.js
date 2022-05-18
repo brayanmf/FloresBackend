@@ -1,10 +1,15 @@
 const User = require("../api/user/user.model");
 const sendToken = require("../utils/sendToken");
-const sendEmail = require("../utils/sendEmail");
+
 const ErrorHandler = require("../utils/errorHandler");
-const crypto = require("crypto");
+
 const sendResponse = require("../utils/sendResponse");
-const { createUser, findEmail } = require("./auth.services");
+const {
+  createUser,
+  findEmail,
+  changePassword,
+  resetIdPassword,
+} = require("./auth.services");
 const fs = require("fs");
 
 exports.register = async (req, res, next) => {
@@ -47,13 +52,8 @@ exports.logout = async (req, res) => {
   sendResponse(null, "Logout SuccessFully", 200, res);
 };
 exports.forgotPassword = async (req, res, next) => {
-  const { user, message } = await findEmail(req.body, next);
+  const user = await findEmail(req.body, next);
   try {
-    await sendEmail({
-      email: user.email,
-      subject: "Restablecer contraseña del Ecommerce",
-      message,
-    });
     sendResponse(
       null,
       `Correo electrónico enviado a ${user.email} con éxito`,
@@ -69,31 +69,8 @@ exports.forgotPassword = async (req, res, next) => {
 };
 exports.resetPassword = async (req, res, next) => {
   try {
-    const resetPasswordToken = crypto
-      .createHash("sha256")
-      .update(req.params.token)
-      .digest("hex");
-
-    const user = await User.findOne({
-      resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() },
-    });
-
-    if (!user)
-      return next(
-        new ErrorHandler(
-          "El token de restablecimiento de contraseña no es válido o ha caducado",
-          400
-        )
-      );
-
-    if (req.body.password !== req.body.confirmPassword)
-      return next(new ErrorHandler("Las contraseñas no coinciden", 400));
-    user.password = req.body.password;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save();
-    sendToken(user, 200, res);
+    await resetIdPassword(req.params, req.body, next);
+    sendResponse(null, "actualización de contraseña con éxito", 200, res);
   } catch (err) {
     next(err);
   }
@@ -101,16 +78,7 @@ exports.resetPassword = async (req, res, next) => {
 
 exports.updatePassword = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id).select("+password");
-    const isPasswordMatched = user.comparePassword(req.body.oldPassword);
-    if (!isPasswordMatched) {
-      return next(new ErrorHandler("Antigua contraseña es incorrecta", 401));
-    }
-    if (req.body.newPassword !== req.body.confirmPassword) {
-      return next(new ErrorHandler("Las contraseñas no coinciden", 400));
-    }
-    user.password = req.body.newPassword;
-    await user.save();
+    const user = await changePassword(req.body, req.user, next);
     sendToken(user, 200, res);
   } catch (err) {
     next(err);

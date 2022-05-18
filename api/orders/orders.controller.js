@@ -10,8 +10,9 @@ const {
 
 exports.newOrder = async (req, res, next) => {
   try {
-    const order = await ordersAdd(req.body);
-    sendResponse(res, 201, "Order created successfully", order);
+    const order = await ordersAdd(req.body, req.user);
+
+    sendResponse(order, 201, "Order created successfully", res);
   } catch (err) {
     next(err);
   }

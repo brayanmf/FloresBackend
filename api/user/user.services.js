@@ -11,7 +11,6 @@ exports.findUser = async ({ id }) => {
 };
 
 exports.changeProfile = async ({ name, email }, { file }, { id }) => {
-  console.log(name, email, file);
   const newUserData = {
     name,
     email,

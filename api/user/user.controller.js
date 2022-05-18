@@ -25,7 +25,7 @@ exports.updateProfile = async (req, res, next) => {
   try {
     const user = await changeProfile(req.body, req, req.user);
 
-    sendResponse(user, "success", 200, res);
+    sendResponse(null, "success", 200, res);
   } catch (err) {
     next(err);
   } finally {

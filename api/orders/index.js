@@ -8,20 +8,17 @@ const {
   updateOrder,
   deleteOrder,
 } = require("./orders.controller");
-const {
-  isAuthenticateUser,
-  authorizeRoles,
-} = require("../../auth/auth.services");
+const { isAuthenticated, authorizeRoles } = require("../../auth/auth.services");
 
-router.route("/order/new").post(isAuthenticateUser, newOrder);
-router.route("/order/:id").get(isAuthenticateUser, getSingleOrder);
-router.route("/orders/my").get(isAuthenticateUser, getMyOrders);
+router.route("/order/new").post(isAuthenticated, newOrder);
+router.route("/order/:id").get(isAuthenticated, getSingleOrder);
+router.route("/orders/my").get(isAuthenticated, getMyOrders);
 router
   .route("/admin/orders")
-  .get(isAuthenticateUser, authorizeRoles("admin"), getAllOrders);
+  .get(isAuthenticated, authorizeRoles("admin"), getAllOrders);
 router
   .route("/admin/order/:id")
-  .put(isAuthenticateUser, authorizeRoles("admin"), updateOrder)
-  .delete(isAuthenticateUser, authorizeRoles("admin"), deleteOrder);
+  .put(isAuthenticated, authorizeRoles("admin"), updateOrder)
+  .delete(isAuthenticated, authorizeRoles("admin"), deleteOrder);
 
 module.exports = router;
