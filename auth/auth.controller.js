@@ -19,9 +19,10 @@ exports.register = async (req, res, next) => {
   } catch (err) {
     next(err);
   } finally {
-    fs.unlink(req.file.path, (err) => {
-      if (err) throw err;
-    });
+    if (req.file)
+      fs.unlink(req.file.path, (err) => {
+        if (err) throw err;
+      });
   }
 };
 exports.login = async (req, res, next) => {

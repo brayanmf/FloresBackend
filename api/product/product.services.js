@@ -1,4 +1,4 @@
-const findProduct = require("./utils/findProduct");
+const { findProduct } = require("./utils/findProduct");
 
 const averageData = (product) => {
   let avg = 0;
@@ -18,27 +18,34 @@ exports.averageReview = (newReviews) => {
   }
   return rating;
 };
-exports.ReviewCreate = async (req, res, next) => {
-  const { rating, comment, productId } = req.body;
+exports.ReviewCreate = async (
+  { rating, comment, productId },
+  { _id, name, avatar }
+) => {
   const review = {
-    user: req.user._id,
-    name: req.user.name,
+    user: _id,
+    name: name,
+    photoProfile: avatar.url,
     rating: Number(rating),
     comment,
   };
+
   const product = await findProduct(productId);
   const isReviewed = product.reviews.find(
-    (rev) => rev.user.toString() === req.user._id.toString()
+    (rev) => rev.user.toString() === _id.toString()
   );
   if (isReviewed) {
     product.reviews.forEach((el) => {
-      if (el.user.toString() === req.user._id.toString())
-        (el.rating = rating), (el.comment = comment);
+      if (el.user.toString() === _id.toString())
+        (el.rating = rating),
+          (el.comment = comment),
+          (el.photoProfile = avatar.url);
     });
   } else {
     product.reviews.push(review);
     product.numOfReviews = product.reviews.length;
   }
   product.rating = averageData(product);
+
   return product;
 };

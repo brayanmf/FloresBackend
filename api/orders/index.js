@@ -12,7 +12,7 @@ const { isAuthenticated, authorizeRoles } = require("../../auth/auth.services");
 
 router.route("/order/new").post(isAuthenticated, newOrder);
 router.route("/order/:id").get(isAuthenticated, getSingleOrder);
-router.route("/orders/my").get(isAuthenticated, getMyOrders);
+router.route("/orders/me").get(isAuthenticated, getMyOrders);
 router
   .route("/admin/orders")
   .get(isAuthenticated, authorizeRoles("admin"), getAllOrders);

@@ -3,7 +3,7 @@ const sendResponse = (data, message, statusCode, res) => {
   if (message === null) message = "";
 
   res.status(statusCode).json({
-    sucess: true,
+    success: true,
     message,
     data,
   });

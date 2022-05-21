@@ -73,7 +73,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 exports.createProductReview = async (req, res, next) => {
   try {
-    const product = ReviewCreate(req, res, next);
+    const product = await ReviewCreate(req.body, req.user);
     await product.save({ validateBeforeSave: false });
     sendResponse(null, "success", 200, res);
   } catch (err) {
