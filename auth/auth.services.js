@@ -13,6 +13,7 @@ exports.createUser = async ({ body, file }, next) => {
     public_id: "istockphoto-1130884625-612x612_cwvfdf",
     url: "https://res.cloudinary.com/dx1ece9ck/image/upload/v1651166764/store/users/istockphoto-1130884625-612x612_cwvfdf.jpg",
   };
+
   if (file) {
     const myCloud = await cloudinary.uploader.upload(file.path, {
       folder: "store/users",
@@ -129,7 +130,7 @@ exports.authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       next(
-        new ErrorHandler("YNo está autorizado para acceder a este recurso", 403)
+        new ErrorHandler("No está autorizado para acceder a este recurso", 403)
       );
     }
     next();

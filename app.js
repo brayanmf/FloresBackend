@@ -18,7 +18,7 @@ app.use(cookieParser());
 const corsOptions = {
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
-  origin: ["http://localhost:3000"],
+  origin: [process.env.FRONTEND_ENDPOINT],
 };
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

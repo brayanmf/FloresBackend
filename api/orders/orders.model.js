@@ -19,11 +19,11 @@ const OrderSchema = new mongoose.Schema({
       required: true,
     },
     codePost: {
-      type: Number,
+      type: String,
       required: true,
     },
     phoneNo: {
-      type: Number,
+      type: String,
       required: true,
     },
   },

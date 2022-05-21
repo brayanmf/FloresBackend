@@ -65,6 +65,10 @@ const productSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
+        photoProfile: {
+          type: String,
+          required: true,
+        },
         rating: {
           type: Number,
           required: true,

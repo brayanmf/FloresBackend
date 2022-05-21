@@ -12,7 +12,7 @@ exports.newOrder = async (req, res, next) => {
   try {
     const order = await ordersAdd(req.body, req.user);
 
-    sendResponse(order, 201, "Order created successfully", res);
+    sendResponse(order, "Order created successfully", 201, res);
   } catch (err) {
     next(err);
   }
@@ -35,7 +35,7 @@ exports.getSingleOrder = async (req, res, next) => {
   try {
     const order = await ordersFindById(req.params);
 
-    sendResponse(res, 200, "Order found successfully", order);
+    sendResponse(order, "Order found successfully", 200, res);
   } catch (err) {
     next(err);
   }
@@ -44,7 +44,7 @@ exports.getSingleOrder = async (req, res, next) => {
 exports.getMyOrders = async (req, res, next) => {
   try {
     const orders = await ordersFindByUser(req.user, next);
-    sendResponse(res, 200, "Orders found successfully", orders);
+    sendResponse(orders, "Orders found successfully", 200, res);
   } catch (err) {
     next(err);
   }
