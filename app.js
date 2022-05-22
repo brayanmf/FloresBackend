@@ -18,7 +18,7 @@ app.use(cookieParser());
 const corsOptions = {
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
-  origin: "https://zesty-pothos-55bab8.netlify.app",
+  origin: process.env.FRONTEND_ENDPOINT,
 };
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
