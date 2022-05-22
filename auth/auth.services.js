@@ -108,7 +108,6 @@ exports.resetIdPassword = async (
 };
 
 /***************** */
-
 exports.isAuthenticated = async (req, res, next) => {
   const { token } = req.cookies;
   if (!token) {

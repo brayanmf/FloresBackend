@@ -9,7 +9,6 @@ const {
   deleteOrder,
 } = require("./orders.controller");
 const { isAuthenticated, authorizeRoles } = require("../../auth/auth.services");
-
 router.route("/order/new").post(isAuthenticated, newOrder);
 router.route("/order/:id").get(isAuthenticated, getSingleOrder);
 router.route("/orders/me").get(isAuthenticated, getMyOrders);
