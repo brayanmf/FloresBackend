@@ -5,10 +5,12 @@ const crypto = require("crypto");
 const cloudinary = require("cloudinary").v2;
 const sendEmail = require("../utils/sendEmail");
 exports.createUser = async ({ body, file }, next) => {
-  const { email, password, name } = body;
+  const { email, password, name, role } = body;
+
   if (!email || !password) {
     return next(new ErrorHandler("Se requiere Email y contraseña", 400));
   }
+
   const avatar = {
     public_id: "istockphoto-1130884625-612x612_cwvfdf",
     url: "https://res.cloudinary.com/dx1ece9ck/image/upload/v1651166764/store/users/istockphoto-1130884625-612x612_cwvfdf.jpg",
@@ -29,7 +31,9 @@ exports.createUser = async ({ body, file }, next) => {
     email,
     password,
     avatar,
+    role,
   });
+
   return user;
 };
 
