@@ -1,12 +1,19 @@
-const { findProduct } = require("./utils/findProduct");
+const Product = require("./product.model");
+const { findProduct, pushImages, averageData } = require("./utils/index");
 
-const averageData = (product) => {
-  let avg = 0;
-  product.reviews.forEach((e) => {
-    avg += e.rating;
-  });
-  return avg / product.reviews.length;
+exports.createData = async ({ user, body, files }) => {
+  body.user = user._id;
+  let arrayImg;
+
+  if (files) {
+    arrayImg = await pushImages(files);
+  }
+
+  const product = await Product.create({ ...body, images: arrayImg });
+
+  return product;
 };
+
 exports.averageReview = (newReviews) => {
   let auxi = 0;
   newReviews.forEach((e) => {
