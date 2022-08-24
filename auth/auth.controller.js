@@ -27,7 +27,6 @@ exports.register = async (req, res, next) => {
 };
 exports.login = async (req, res, next) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     if (!email || !password) {
       return next(new ErrorHandler("Se requiere Email y contraseña", 400));

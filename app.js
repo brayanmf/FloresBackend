@@ -17,6 +17,7 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   origin: process.env.FRONTEND_ENDPOINT,
 };
+
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,

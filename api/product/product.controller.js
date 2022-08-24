@@ -2,12 +2,12 @@ const Product = require("./product.model");
 const ErrorHandler = require("../../utils/errorHandler");
 const ApiFeatures = require("../../utils/apiFeatures");
 const sendResponse = require("../../utils/sendResponse");
-const { ReviewCreate } = require("./product.services");
-const { findProduct } = require("./utils/findProduct");
+const { ReviewCreate, createData } = require("./product.services");
+const { findProduct } = require("./utils/index");
 exports.createProduct = async (req, res, next) => {
   try {
-    req.body.user = req.user.id;
-    const product = await Product.create(req.body);
+   
+    const product = await createData(req);
     sendResponse(product, "success", 201, res);
   } catch (err) {
     next(err);
@@ -32,6 +32,14 @@ exports.getAllProducts = async (req, res, next) => {
       resultPerPage,
       filteredProductsCount,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+exports.getAdminProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find();
+    sendResponse(products, "success", 200, res);
   } catch (err) {
     next(err);
   }

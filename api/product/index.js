@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const { isAuthenticated, authorizeRoles } = require("../../auth/auth.services");
+const multer = require("multer");
 const router = Router();
 const {
   createProduct,
@@ -10,14 +11,35 @@ const {
   getProductReviews,
   createProductReview,
   deleteReview,
+  getAdminProducts,
 } = require("./product.controller");
-
+const upload = multer({
+  limits: { fieldSize: 25 * 1024 * 1024 },
+  dest: "./temp",
+});
+/* const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, "temp/");
+  },
+  filename(req, file, cb) {
+    cb(null, file.originalname);
+  },
+  limits: { fieldSize: 25 * 1024 * 1024 },
+});
+const upload = multer({ storage, limits: { fieldSize: 25 * 1024 * 1024 } });*/
 router.get("/product/all", getAllProducts);
+router.get(
+  "/admin/products",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  getAdminProducts
+);
 router.get("/product/:id", getProductDetails);
 router.post(
   "/admin/product/new",
   isAuthenticated,
   authorizeRoles("admin"),
+  upload.array("images"),
   createProduct
 );
 router
