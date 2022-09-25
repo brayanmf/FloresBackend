@@ -44,7 +44,7 @@ router.post(
 );
 router
   .route("/admin/product/:id")
-  .get(isAuthenticated, deleteProduct)
+  .delete(isAuthenticated, deleteProduct)
   .put(isAuthenticated, updateProduct);
 
 router.put("/product/review", isAuthenticated, createProductReview);

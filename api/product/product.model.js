@@ -25,14 +25,16 @@ const productSchema = new mongoose.Schema(
         public_id: {
           type: String,
           required: true,
-          default:
+          /* for demo,without frontend, default:
             "Sudadera-con-capucha-de-One-piece-para-hombre-ropa-con-estampado-de-barba-blanca-Portgas-D.jpg_Q90.jpg__blrayz",
+        */
         },
         url: {
           type: String,
           required: true,
-          default:
+          /*  for demo,without frontend, default:
             "https://res.cloudinary.com/dx1ece9ck/image/upload/v1651177829/store/clothing/Sudadera-con-capucha-de-One-piece-para-hombre-ropa-con-estampado-de-barba-blanca-Portgas-D.jpg_Q90.jpg__blrayz.webp",
+        */
         },
       },
     ],
