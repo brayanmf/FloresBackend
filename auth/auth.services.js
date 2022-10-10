@@ -40,10 +40,12 @@ exports.createUser = async ({ body, file }, next) => {
 exports.findEmail = async ({ email }, next) => {
   try {
     const user = await User.findOne({ email: email });
+
     if (!user) {
       return next(new ErrorHandler("tu correo no existe", 404));
     }
     const resetToken = user.getResetPasswordToken();
+
     await user.save({ validateBeforeSave: false });
     /*  const resetPasswordUrl = `${req.protocol}://${req.get(
       "host"
@@ -55,6 +57,7 @@ exports.findEmail = async ({ email }, next) => {
       subject: "Restablecer contraseña del Ecommerce",
       message,
     });
+
     return user;
   } catch (error) {
     next(error);

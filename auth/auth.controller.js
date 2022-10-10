@@ -54,17 +54,22 @@ exports.logout = async (req, res) => {
 };
 exports.forgotPassword = async (req, res, next) => {
   const user = await findEmail(req.body, next);
+
   try {
-    sendResponse(
-      null,
-      `Correo electrónico enviado a ${user.email} con éxito`,
-      200,
-      res
-    );
+    if (user)
+      sendResponse(
+        null,
+        `Correo electrónico enviado a ${user.email} con éxito`,
+        200,
+        res
+      );
   } catch (err) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save({ validateBeforeSave: false });
+    if (!user) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user?.save({ validateBeforeSave: false });
+    }
+
     return next(err);
   }
 };
