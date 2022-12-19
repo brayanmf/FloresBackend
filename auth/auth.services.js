@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const cloudinary = require("cloudinary").v2;
 const sendEmail = require("../utils/sendEmail");
 exports.createUser = async ({ body, file }, next) => {
-  const { email, password, name, role } = body;
+  const { email, password, name } = body;
 
   if (!email || !password) {
     return next(new ErrorHandler("Se requiere Email y contraseña", 400));
@@ -24,15 +24,18 @@ exports.createUser = async ({ body, file }, next) => {
     });
     avatar.public_id = myCloud.public_id;
     avatar.url = myCloud.url;
-  }
 
+   
+  }
+ 
   const user = await User.create({
     name,
     email,
     password,
     avatar,
-    role,
+    
   });
+
 
   return user;
 };

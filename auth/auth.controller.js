@@ -13,6 +13,7 @@ const {
 const fs = require("fs");
 
 exports.register = async (req, res, next) => {
+ 
   try {
     const user = await createUser(req, next);
     sendToken(user, 201, res);

@@ -12,6 +12,7 @@ let connectionString =
 if (NODE_ENV === "production") connectionString = DB_CONNECTION_URI_PROD;
 
 const connectDatabase = () => {
+ console.log(connectionString,"bmf")
   mongoose
     .connect(connectionString)
     .then(() =>
